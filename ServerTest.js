@@ -1,7 +1,9 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 // Node-Http-Modul importieren
-import * as Http from "http";
+var Http = require("http");
 // Node-Url-Modul importieren
-import * as Url from "url";
+var Url = require("url");
 var ServerTest;
 (function (ServerTest) {
     // Port vom Process-Objekt erfragen 

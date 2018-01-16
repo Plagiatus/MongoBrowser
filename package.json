@@ -1,15 +1,27 @@
 {
-	"name" : "ServerTest",
-	"version" : "0.0.1",
-	"description" : "Testing node and server",
-	"author" : "Jirka Dell'Oro-Friedl'",
-	"main" : "ServerTest.js",
-	"scripts" : {
+  "name": "mongobrowser",
+  "version": "1.0.0",
+  "description": "ReST Mongo Browser",
+  "author": "Jirka Dell'Oro-Friedl",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
 		"start" : "node ServerTest.js"
-	},
+  },
 	"engines" : {
 		"node" : "6.11.1"
 	},
-	"dependencies" : {
-	}
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JirkaDellOro/MongoBrowser.git"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JirkaDellOro/MongoBrowser/issues"
+  },
+  "homepage": "https://github.com/JirkaDellOro/MongoBrowser#readme",
+  "dependencies": {
+    "tslint": "^5.9.1",
+    "typescript": "^2.6.2"
+  }
 }
