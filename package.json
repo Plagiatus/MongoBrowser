@@ -8,6 +8,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
 		"start" : "node ServerTest.js"
   },
+	"engines" : {
+		"node" : "6.11.1"
+	},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/JirkaDellOro/MongoBrowser.git"
