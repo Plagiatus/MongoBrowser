@@ -1,4 +1,4 @@
 # MongoBrowser
 ReST Mongo Browser
 
-call JirkaDellOro.github.io?u=username&p=password&d=databaseadress[&c=collection]
+call https://jirkadelloro.github.io/MongoBrowser/index.html?u=username&p=password&d=databaseadress[&c=collection]
