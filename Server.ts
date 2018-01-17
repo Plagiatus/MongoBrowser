@@ -27,29 +27,37 @@ function handleListen(): void {
 function handleRequest(_request: Http.IncomingMessage, _response: Http.ServerResponse): void {
     console.log("Request received");
     let query: AssocStringString = Url.parse(_request.url, true).query;
-    var command: string = query["command"];
-
-    switch (command) {
-        case "insert":
-            let student: StudentData = {
-                name: query["name"],
-                firstname: query["firstname"],
-                matrikel: parseInt(query["matrikel"])
-            };
-            Database.insert(student);
-            respond(_response, "storing data");
-            break;
-        case "find":
-            Database.findAll(function(json: string): void {
-                respond(_response, json);
-            });
-            break;
-        default:
-            respond(_response, "unknown command: " + command);
-            break;
+    //var command: string = query["command"];
+    var output: string;
+    if (!query["u"] || !query["p"] || !query["d"] || !query["n"]) {
+        output = "<strong>Query parameters u [username], p [password], d [database address] and n [database name] are required<br>";
+        output += "c [collection] is optional<strong>";
+        respond(_response, output);
+        return;
     }
-}
 
+    /*
+        switch (command) {
+            case "insert":
+                let student: StudentData = {
+                    name: query["name"],
+                    firstname: query["firstname"],
+                    matrikel: parseInt(query["matrikel"])
+                };
+                Database.insert(student);
+                respond(_response, "storing data");
+                break;
+            case "find":
+                Database.findAll(function (json: string): void {
+                    respond(_response, json);
+                });
+                break;
+            default:
+                respond(_response, "unknown command: " + command);
+                break;
+        }
+    */
+}
 function respond(_response: Http.ServerResponse, _text: string): void {
     //console.log("Preparing response: " + _text);
     _response.setHeader("Access-Control-Allow-Origin", "*");

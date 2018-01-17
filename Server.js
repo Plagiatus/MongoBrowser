@@ -1,10 +1,11 @@
+"use strict";
 /**
  * Simple server managing between client and database
  * @author: Jirka Dell'Oro-Friedl
  */
-import * as Http from "http";
-import * as Url from "url";
-import * as Database from "./Database";
+Object.defineProperty(exports, "__esModule", { value: true });
+var Http = require("http");
+var Url = require("url");
 console.log("Server starting");
 var port = process.env.PORT;
 if (port == undefined)
@@ -19,26 +20,35 @@ function handleListen() {
 function handleRequest(_request, _response) {
     console.log("Request received");
     var query = Url.parse(_request.url, true).query;
-    var command = query["command"];
-    switch (command) {
-        case "insert":
-            var student = {
-                name: query["name"],
-                firstname: query["firstname"],
-                matrikel: parseInt(query["matrikel"])
-            };
-            Database.insert(student);
-            respond(_response, "storing data");
-            break;
-        case "find":
-            Database.findAll(function (json) {
-                respond(_response, json);
-            });
-            break;
-        default:
-            respond(_response, "unknown command: " + command);
-            break;
+    //var command: string = query["command"];
+    var output;
+    if (!query["u"] || !query["p"] || !query["d"] || !query["n"]) {
+        output = "<strong>Query parameters u [username], p [password], d [database address] and n [database name] are required<br>";
+        output += "c [collection] is optional<strong>";
+        respond(_response, output);
+        return;
     }
+    /*
+        switch (command) {
+            case "insert":
+                let student: StudentData = {
+                    name: query["name"],
+                    firstname: query["firstname"],
+                    matrikel: parseInt(query["matrikel"])
+                };
+                Database.insert(student);
+                respond(_response, "storing data");
+                break;
+            case "find":
+                Database.findAll(function (json: string): void {
+                    respond(_response, json);
+                });
+                break;
+            default:
+                respond(_response, "unknown command: " + command);
+                break;
+        }
+    */
 }
 function respond(_response, _text) {
     //console.log("Preparing response: " + _text);

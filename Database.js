@@ -1,8 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * Simple database insertion and query for MongoDB
  * @author: Jirka Dell'Oro-Friedl
  */
-import * as Mongo from "mongodb";
+var Mongo = require("mongodb");
 console.log("Database starting");
 var databaseURL = "mongodb://localhost:27017";
 var databaseName = "Test";
@@ -23,13 +25,14 @@ function handleConnect(_e, _db) {
         students = db.collection("students");
     }
 }
-export function insert(_doc) {
+function insert(_doc) {
     students.insertOne(_doc, handleInsert);
 }
+exports.insert = insert;
 function handleInsert(_e) {
     console.log("Database insertion returned -> " + _e);
 }
-export function findAll(_callback) {
+function findAll(_callback) {
     var cursor = students.find();
     cursor.toArray(prepareAnswer);
     function prepareAnswer(_e, studentArray) {
@@ -39,4 +42,5 @@ export function findAll(_callback) {
             _callback(JSON.stringify(studentArray));
     }
 }
+exports.findAll = findAll;
 //# sourceMappingURL=Database.js.map
