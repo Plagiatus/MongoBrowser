@@ -6,10 +6,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-		"start" : "node ServerTest.js"
+		"start" : "node Server.js"
   },
 	"engines" : {
-		"node" : "6.11.1"
+		"node" : "8.9.4"
 	},
   "repository": {
     "type": "git",

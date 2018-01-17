@@ -1,12 +1,10 @@
-"use strict";
 /**
  * Simple server managing between client and database
  * @author: Jirka Dell'Oro-Friedl
  */
-Object.defineProperty(exports, "__esModule", { value: true });
-var Http = require("http");
-var Url = require("url");
-var Database = require("./Database");
+import * as Http from "http";
+import * as Url from "url";
+import * as Database from "./Database";
 console.log("Server starting");
 var port = process.env.PORT;
 if (port == undefined)
