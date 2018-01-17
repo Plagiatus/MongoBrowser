@@ -1,16 +1,16 @@
 {
-  "name": "mongobrowser",
+  "name": "mongodbrowser",
   "version": "1.0.0",
   "description": "ReST Mongo Browser",
   "author": "Jirka Dell'Oro-Friedl",
-  "main": "index.js",
+  "main": "Server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-		"start" : "node Server.js"
+    "start": "node Server.js"
   },
-	"engines" : {
-		"node" : "8.9.4"
-	},
+  "engines": {
+    "node": "8.9.4"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/JirkaDellOro/MongoBrowser.git"
@@ -21,6 +21,8 @@
   },
   "homepage": "https://github.com/JirkaDellOro/MongoBrowser#readme",
   "dependencies": {
+    "@types/mongodb": "^3.0.1",
+    "mongodb": "^3.0.1",
     "tslint": "^5.9.1",
     "typescript": "^2.6.2"
   }

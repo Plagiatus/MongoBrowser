@@ -5,46 +5,48 @@
 import * as Mongo from "mongodb";
 console.log("Database starting");
 
-let databaseURL: string = "mongodb://localhost:27017";
-let databaseName: string = "Test";
+let dbURL: string; // = "mongodb://localhost:27017";
+let dbName: string; // = "Test";
 let db: Mongo.Db;
-let students: Mongo.Collection;
+let dbCollection: Mongo.Collection;
 
-if (process.env.NODE_ENV == "production") {
-    //    databaseURL = "mongodb://username:password@hostname:port/database";
-    databaseURL = "mongodb://testuser:testpassword@ds129532.mlab.com:29532/eia2";
-    databaseName = "eia2";
-}
+//if (process.env.NODE_ENV == "production") {
+//    databaseURL = "mongodb://username:password@hostname:port/database";
+dbURL = "mongodb://testuser:testpassword@ds129532.mlab.com:29532/eia2";
+dbName = "eia2";
+//}
+export function connect(_user: string, _password: string, _address: string, _database: string, _collection: string, _callback: (out: string) => void): void {
+    dbName = _database;
+    if (_user)
+        dbURL = "mongodb://" + _user + ":" + _password + "@" + _address;
+    else
+        dbURL = "mongodb://" + _address;
+    console.log(dbURL);
+    Mongo.MongoClient.connect(dbURL, { connectTimeoutMS: 8000 }, handleConnect);
 
-Mongo.MongoClient.connect(databaseURL, handleConnect);
-
-function handleConnect(_e: Mongo.MongoError, _db: Mongo.Db): void {
-    if (_e)
-        console.log("Unable to connect to database, error: ", _e);
-    else {
-        console.log("Connected to database!");
-        db = _db.db(databaseName);
-        students = db.collection("students");
+    function handleConnect(_e: Mongo.MongoError, _mc: Mongo.MongoClient): void {
+        if (_e) {
+            let output: string = "Unable to connect to database, error: " + _e;
+            console.log(output);
+            _callback(output);
+        }
+        else {
+            console.log("Connected to database!");
+            db = _mc.db(dbName);
+            dbCollection = db.collection(_collection);
+            findAll(_callback);
+        }
     }
 }
 
-export function insert(_doc: StudentData): void {
-    students.insertOne(_doc, handleInsert);
-}
-
-function handleInsert(_e: Mongo.MongoError): void {
-    console.log("Database insertion returned -> " + _e);
-}
-
-
-export function findAll(_callback: Function): void {
-    var cursor: Mongo.Cursor = students.find();
+export function findAll(_callback: (out: string) => void): void {
+    var cursor: Mongo.Cursor = dbCollection.find();
     cursor.toArray(prepareAnswer);
 
-    function prepareAnswer(_e: Mongo.MongoError, studentArray: StudentData[]): void {
+    function prepareAnswer(_e: Mongo.MongoError, result: Array<string>): void {
         if (_e)
             _callback("Error" + _e);
         else
-            _callback(JSON.stringify(studentArray));
+            _callback(JSON.stringify(result));
     }
 }

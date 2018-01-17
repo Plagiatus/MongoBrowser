@@ -6,40 +6,46 @@ Object.defineProperty(exports, "__esModule", { value: true });
  */
 var Mongo = require("mongodb");
 console.log("Database starting");
-var databaseURL = "mongodb://localhost:27017";
-var databaseName = "Test";
+var dbURL; // = "mongodb://localhost:27017";
+var dbName; // = "Test";
 var db;
-var students;
-if (process.env.NODE_ENV == "production") {
-    //    databaseURL = "mongodb://username:password@hostname:port/database";
-    databaseURL = "mongodb://testuser:testpassword@ds129532.mlab.com:29532/eia2";
-    databaseName = "eia2";
-}
-Mongo.MongoClient.connect(databaseURL, handleConnect);
-function handleConnect(_e, _db) {
-    if (_e)
-        console.log("Unable to connect to database, error: ", _e);
-    else {
-        console.log("Connected to database!");
-        db = _db.db(databaseName);
-        students = db.collection("students");
+var dbCollection;
+//if (process.env.NODE_ENV == "production") {
+//    databaseURL = "mongodb://username:password@hostname:port/database";
+dbURL = "mongodb://testuser:testpassword@ds129532.mlab.com:29532/eia2";
+dbName = "eia2";
+//}
+function connect(_user, _password, _address, _database, _collection, _callback) {
+    dbName = _database;
+    if (_user)
+        dbURL = "mongodb://" + _user + ":" + _password + "@" + _address;
+    else
+        dbURL = "mongodb://" + _address;
+    console.log(dbURL);
+    Mongo.MongoClient.connect(dbURL, { connectTimeoutMS: 8000 }, handleConnect);
+    function handleConnect(_e, _mc) {
+        if (_e) {
+            var output = "Unable to connect to database, error: " + _e;
+            console.log(output);
+            _callback(output);
+        }
+        else {
+            console.log("Connected to database!");
+            db = _mc.db(dbName);
+            dbCollection = db.collection(_collection);
+            findAll(_callback);
+        }
     }
 }
-function insert(_doc) {
-    students.insertOne(_doc, handleInsert);
-}
-exports.insert = insert;
-function handleInsert(_e) {
-    console.log("Database insertion returned -> " + _e);
-}
+exports.connect = connect;
 function findAll(_callback) {
-    var cursor = students.find();
+    var cursor = dbCollection.find();
     cursor.toArray(prepareAnswer);
-    function prepareAnswer(_e, studentArray) {
+    function prepareAnswer(_e, result) {
         if (_e)
             _callback("Error" + _e);
         else
-            _callback(JSON.stringify(studentArray));
+            _callback(JSON.stringify(result));
     }
 }
 exports.findAll = findAll;

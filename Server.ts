@@ -6,11 +6,12 @@
 import * as Http from "http";
 import * as Url from "url";
 import * as Database from "./Database";
+import { ParsedUrlQuery } from "querystring";
 
 console.log("Server starting");
 
-let port: number = process.env.PORT;
-if (port == undefined)
+let port: number = parseInt(process.env.PORT);
+if (isNaN(port))
     port = 8100;
 
 let server: Http.Server = Http.createServer();
@@ -19,49 +20,53 @@ server.addListener("request", handleRequest);
 server.listen(port);
 
 
-
 function handleListen(): void {
     console.log("Listening on port: " + port);
 }
 
 function handleRequest(_request: Http.IncomingMessage, _response: Http.ServerResponse): void {
     console.log("Request received");
-    let query: AssocStringString = Url.parse(_request.url, true).query;
+    let query: ParsedUrlQuery = Url.parse(_request.url, true).query;
     //var command: string = query["command"];
     var output: string;
-    if (!query["u"] || !query["p"] || !query["d"] || !query["n"]) {
-        output = "<strong>Query parameters u [username], p [password], d [database address] and n [database name] are required<br>";
-        output += "c [collection] is optional<strong>";
-        respond(_response, output);
+    let username: string = <string>query["u"];
+    let password: string = <string>query["p"];
+    let address: string = <string>query["a"];
+    let database: string = <string>query["n"];
+    let collection: string = <string>query["c"];
+    let missingParameters: boolean = false;
+    output = "<h1>mongoDBrowser</h1>";
+    output += "<h3>Query parameters</h3><table><tr>";
+    output += "<td>u=</td><td>" + username + "<td>username</td><td>(optional)</td></tr><tr>";
+    output += "<td>p=</td>" + ifMissing(username && !password, password) + "<td>password</td><td>(required when username given)</td></tr><tr>";
+    output += "<td>a=</td>" + ifMissing(!address, address) + "<td>database address</td><td>(required, everything right of '@')</td></tr><tr>";
+    output += "<td>n=</td>" + ifMissing(!database, database) + "<td>database name</td><td>(required)</td></tr><tr>";
+    output += "<td>c=</td>" + ifMissing(!collection, collection) + "<td>collection</td><td>(required)</td></tr>";
+    output += "</table>";
+    if (missingParameters) {
+        respond(_response, "");
         return;
     }
+    else {
+        output += "<h3>Result</h3>";
+        Database.connect(username, password, address, database, collection, processDatabaseResult);
+    }
 
-    /*
-        switch (command) {
-            case "insert":
-                let student: StudentData = {
-                    name: query["name"],
-                    firstname: query["firstname"],
-                    matrikel: parseInt(query["matrikel"])
-                };
-                Database.insert(student);
-                respond(_response, "storing data");
-                break;
-            case "find":
-                Database.findAll(function (json: string): void {
-                    respond(_response, json);
-                });
-                break;
-            default:
-                respond(_response, "unknown command: " + command);
-                break;
-        }
-    */
-}
-function respond(_response: Http.ServerResponse, _text: string): void {
-    //console.log("Preparing response: " + _text);
-    _response.setHeader("Access-Control-Allow-Origin", "*");
-    _response.setHeader("content-type", "text/html; charset=utf-8");
-    _response.write(_text);
-    _response.end();
+    function ifMissing(_missing: boolean, _notMissing: string): string {
+        missingParameters = missingParameters || _missing;
+        return "<td>" + ((_missing) ? "<strong>missing</strong>" : _notMissing) + "</td>";
+    }
+
+    function processDatabaseResult(_result: string): void {
+        console.log(_result);
+        respond(_response, _result);
+    }
+
+    function respond(_response: Http.ServerResponse, _text: string): void {
+        //console.log("Preparing response: " + _text);
+        _response.setHeader("Access-Control-Allow-Origin", "*");
+        _response.setHeader("content-type", "text/html; charset=utf-8");
+        _response.write(output + _text);
+        _response.end();
+    }
 }
