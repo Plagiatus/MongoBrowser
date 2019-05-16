@@ -33,13 +33,13 @@ function handleRequest(_request, _response) {
     output += "<body><h1>mongoDBrowser</h1>";
     output += "<h3>Query parameters</h3><table><tr>";
     output += "<th>key</th><th>current value</th><th>description</th><th>remark</th></tr><tr>";
-    output += "<td>u=</td><td>" + username + "<td>username</td><td>(may be omitted for local database)</td></tr><tr>";
+    output += "<td>u=</td><td>" + username + "</td><td>username</td><td>(may be omitted for local database)</td></tr><tr>";
     output += "<td>p=</td>" + ifMissing(username && !password, password) + "<td>password</td><td>(required when username given)</td></tr><tr>";
     output += "<td>a=</td>" + ifMissing(!address, address) + "<td>database address</td><td>(required, everything right of '@')</td></tr><tr>";
     output += "<td>n=</td>" + ifMissing(!database, database) + "<td>database name</td><td>(required)</td></tr><tr>";
     output += "<td>c=</td>" + ifMissing(!collection, collection) + "<td>collection</td><td>(required)</td></tr>";
     output += "</table>";
-    output += "<p>Example: <a href='https://mongodbrowser.herokuapp.com/?u=testuser&p=testpassword&a=ds129532.mlab.com:29532/eia2&n=eia2&c=students'>Click here</a></p>";
+    output += "<p>Example: <a href='https://mongodbnetbrowser.herokuapp.com/?u=user&p=123456user&a=eia2-57vpd.mongodb.net&n=eia2&c=students'>Click here</a></p>";
     if (missingParameters) {
         respond(_response, "");
         return;

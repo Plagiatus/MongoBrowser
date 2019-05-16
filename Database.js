@@ -18,9 +18,9 @@ dbName = "eia2";
 function connect(_user, _password, _address, _database, _collection, _callback) {
     dbName = _database;
     if (_user)
-        dbURL = "mongodb://" + _user + ":" + _password + "@" + _address;
+        dbURL = "mongodb+srv://" + _user + ":" + _password + "@" + _address;
     else
-        dbURL = "mongodb://" + _address;
+        dbURL = "mongodb+srv://" + _address;
     console.log(dbURL);
     Mongo.MongoClient.connect(dbURL, { connectTimeoutMS: 8000 }, handleConnect);
     function handleConnect(_e, _mc) {
